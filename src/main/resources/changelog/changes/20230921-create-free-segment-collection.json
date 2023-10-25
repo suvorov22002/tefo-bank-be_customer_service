@@ -1,0 +1,35 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-09-21",
+        "author": "Maryana",
+        "comment": "Create sequential free segment collection",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "seq_free_segment",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "freeSegment",
+                        "strategy",
+                        "allowedSymbols",
+                        "generatedAt"
+                      ]
+                    }
+                  },
+                  "validationAction": "error",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

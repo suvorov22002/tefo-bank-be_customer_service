@@ -1,0 +1,39 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "2023-09-19",
+        "author": "Maryana",
+        "comment": "Create customer collection",
+        "changes": [
+          {
+            "createCollection": {
+              "collectionName": "customers",
+              "options": {
+                "$rawJson": {
+                  "validator": {
+                    "$jsonSchema": {
+                      "bsonType": "object",
+                      "required": [
+                        "typeId",
+                        "code",
+                        "statusId",
+                        "status",
+                        "shortName",
+                        "countryId",
+                        "unitId",
+                        "kyc.relationshipManagerId"
+                      ]
+                    }
+                  },
+                  "validationAction": "error",
+                  "validationLevel": "strict"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

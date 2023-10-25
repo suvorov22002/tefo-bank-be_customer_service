@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.tefo</groupId>
+    <artifactId>customer-service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>customer-service</name>
+    <description>customer-service</description>
+    <properties>
+        <java.version>17</java.version>
+        <spring-openfeign.version>4.0.4</spring-openfeign.version>
+        <nexus-custom-data-library.repository>http://localhost:8081/repository/custom-data-library-release/
+        </nexus-custom-data-library.repository>
+        <nexus-common-utils-library.repository>http://localhost:8081/repository/common-utils-library-release/
+        </nexus-common-utils-library.repository>
+        <mongodb.version>4.9.1</mongodb.version>
+        <mongodb-liquibase.version>4.20.0</mongodb-liquibase.version>
+        <springdoc-openapi.version>2.1.0</springdoc-openapi.version>
+        <liquibase.propertyFile>src/main/resources/liquibase.properties</liquibase.propertyFile>
+        <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+
+        <common-utils-lib.version>1.0.10</common-utils-lib.version>
+        <custom-field-lib.version>1.0.33</custom-field-lib.version>
+        <instancio-junit.version>2.11.0</instancio-junit.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${spring-openfeign.version}</version>
+        </dependency>
+
+        <!-- Mongo dependencies -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-core</artifactId>
+            <version>${mongodb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>bson</artifactId>
+            <version>${mongodb.version}</version>
+        </dependency>
+
+        <!-- Liquibase dependency -->
+        <dependency>
+            <groupId>org.liquibase.ext</groupId>
+            <artifactId>liquibase-mongodb</artifactId>
+            <version>${mongodb-liquibase.version}</version>
+        </dependency>
+
+        <!--OpenAPI integration-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
+        </dependency>
+
+        <!--Other tools-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tefo.library</groupId>
+            <artifactId>custom-data-library</artifactId>
+            <version>${custom-field-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tefo.library</groupId>
+            <artifactId>common-utils-library</artifactId>
+            <version>${common-utils-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!--Dependencies for testing-->
+        <dependency>
+            <groupId>org.instancio</groupId>
+            <artifactId>instancio-junit</artifactId>
+            <version>${instancio-junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>customdatalibrary</id>
+            <url>${nexus-custom-data-library.repository}</url>
+        </repository>
+        <repository>
+            <id>commonutilslibrary</id>
+            <url>${nexus-common-utils-library.repository}</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version> <!--From parent-->
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version> <!--From parent-->
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>${lombok-mapstruct-binding.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>com.tefo.library</groupId>
+                            <artifactId>custom-data-library</artifactId>
+                            <version>${custom-field-lib.version}</version>
+                        </path>
+                        <path>
+                            <groupId>com.tefo.library</groupId>
+                            <artifactId>common-utils-library</artifactId>
+                            <version>${common-utils-lib.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <configuration>
+                    <propertyFile>${liquibase.propertyFile}</propertyFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
