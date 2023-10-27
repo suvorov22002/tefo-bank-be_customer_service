@@ -20,5 +20,5 @@ public interface CustomerRepository extends MongoRepository<CustomerEntity, Stri
     List<CustomerEntity> findAllByOrderByShortName();
 
     @Collation("en")
-    List<CustomerEntity> findAllByStatusOrderByShortName(CustomerStatus status);
+    List<CustomerEntity> findAllByStatusOrderByShortName(String status);
 }

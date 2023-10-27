@@ -81,7 +81,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerEntity> getActiveCustomers() {
-        return customerRepository.findAllByStatusOrderByShortName(CustomerStatus.ACTIVE);
+        return customerRepository.findAllByStatusOrderByShortName(CustomerStatus.ACTIVE.toString());
     }
 
     @Override
