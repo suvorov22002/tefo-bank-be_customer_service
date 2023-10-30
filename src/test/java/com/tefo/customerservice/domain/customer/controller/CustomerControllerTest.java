@@ -311,7 +311,7 @@ class CustomerControllerTest {
     @Test
     @DisplayName("Should authorize customer and trigger injected service and mapper")
     void shouldAuthorizeCustomer() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = post(RestEndpoints.CUSTOMER_URL + "/{customerId}/authorize", customerId);
+        MockHttpServletRequestBuilder requestBuilder = post(RestEndpoints.CUSTOMER_URL + "/{customerId}/authorise", customerId);
 
         when(customerService.authorizeCustomer(customerId)).thenReturn(customer);
         when(customerMapper.toDto(customer)).thenReturn(customerResponseDto);

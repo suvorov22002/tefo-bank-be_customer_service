@@ -7,7 +7,6 @@ import com.tefo.customerservice.core.feginclient.IdentityServiceClient;
 import com.tefo.customerservice.core.feginclient.OrgStructureServiceClient;
 import com.tefo.customerservice.domain.customer.dto.CustomerRequestDto;
 import com.tefo.customerservice.domain.customer.model.CustomerEntity;
-import com.tefo.customerservice.domain.customer.model.KYC;
 import com.tefo.customerservice.domain.customer.model.enumeration.CustomerStatus;
 import com.tefo.customerservice.domain.customer.repository.CustomerRepository;
 import com.tefo.library.commonutils.basestructure.dto.BasicInfoDto;
@@ -17,7 +16,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -101,17 +99,6 @@ public abstract class BasicMapper {
         } catch (Exception e) {
             return null;
         }
-    }
-
-    @Named("calculateNextReviewDate")
-    public LocalDate calculateNextReviewDate(KYC entity) {
-        if (Objects.nonNull(entity.getPreviousReviewDate()) && Objects.isNull(entity.getNextReviewDate())) {
-            CustomerSettingsDTO partOfSettings = coreSettingsServiceClient.getPartOfSettings();
-            if (Objects.nonNull(partOfSettings) && Objects.nonNull(partOfSettings.getKYCPeriod())) {
-                return entity.getPreviousReviewDate().plusYears(partOfSettings.getKYCPeriod());
-            }
-        }
-        return entity.getNextReviewDate();
     }
 
     @Named("getDefaultCustomerStatusId")

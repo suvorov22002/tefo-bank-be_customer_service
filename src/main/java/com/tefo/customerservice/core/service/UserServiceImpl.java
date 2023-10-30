@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
             case "VALIDATE" -> {
                 return isAllowValidateAction(customer, userPermissionCodes);
             }
-            case "AUTHORIZE" -> {
+            case "AUTHORISE" -> {
                 return isAllowAuthorizeAction(customer, userPermissionCodes);
             }
             case "EDIT" -> {

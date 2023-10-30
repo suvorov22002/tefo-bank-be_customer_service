@@ -105,7 +105,7 @@ class UserServiceImplTest {
                 Arguments.of("REJECT", Set.of(editRmUserPermissionBasicDto), customerWithProspectStatus, true),
                 Arguments.of("VALIDATE", Set.of(editBOUserPermissionBasicDto), customerWithProspectStatus, true),
                 Arguments.of("VALIDATE", Set.of(editRmUserPermissionBasicDto), customerWithProspectStatus, true),
-                Arguments.of("AUTHORIZE", Set.of(authorizeCustomerUserPermissionBasicDto), customerWithPendAuthStatus, true),
+                Arguments.of("AUTHORISE", Set.of(authorizeCustomerUserPermissionBasicDto), customerWithPendAuthStatus, true),
                 Arguments.of("EDIT", Set.of(editBOUserPermissionBasicDto), customerWithProspectStatus, true),
                 Arguments.of("EDIT", Set.of(editRmUserPermissionBasicDto), customerWithProspectStatus, true),
                 Arguments.of("UPDATE", Set.of(editRmUserPermissionBasicDto), customerWithProspectStatus, false)

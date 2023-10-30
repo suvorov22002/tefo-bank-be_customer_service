@@ -12,6 +12,5 @@ public abstract class KycMapper {
     @Mapping(target = "introducerName", source = "introducerId", qualifiedByName = "getCustomerName")
     @Mapping(target = "kycStatusName", source = "kycStatusId", qualifiedByName = "getDictionaryValue")
     @Mapping(target = "monitoringModeName", source = "monitoringModeId", qualifiedByName = "getDictionaryValue")
-    @Mapping(target = "nextReviewDate", source = "entity", qualifiedByName = "calculateNextReviewDate")
     public abstract KYCResponseDto toDto(KYC entity);
 }

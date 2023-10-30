@@ -44,7 +44,7 @@ public class CustomerStructure implements EntityStructure {
     private static final String UNIT_KEY = "unit";
     private static final String TERM_KEY = "term";
 
-    private static final RequiredValidationRule REQUIRED_VALIDATION_RULE = new RequiredValidationRule(ValidationMessages.VALUE_SHOULD_NOT_BE_NULL);
+    private static final RequiredValidationRule REQUIRED_VALIDATION_RULE = new RequiredValidationRule(ValidationErrorMessages.MANDATORY_ERROR_MESSAGE);
 
     @Override
     public Set<Field> getFields() {

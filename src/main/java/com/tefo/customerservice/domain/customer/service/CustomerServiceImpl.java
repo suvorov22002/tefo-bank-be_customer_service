@@ -100,6 +100,7 @@ public class CustomerServiceImpl implements CustomerService {
         if (StringUtils.isEmpty(customer.getShortName())) {
             customer.setShortName(generateShortName(customer));
         }
+        setNextReviewDate(customer);
         setCustomerAge(customer);
         customer.setCode(generateCode(customer));
         customer.setCreatedAt(LocalDateTime.now());
@@ -229,7 +230,7 @@ public class CustomerServiceImpl implements CustomerService {
         CustomerSettingsDTO partOfSettings = coreSettingsServiceClient.getPartOfSettings();
         Boolean isUsedUnitCodeInInternalCode = partOfSettings.getIsUsedUnitCodeInInternalCode();
         UnitResponseDto unit = orgStructureServiceClient.getUnitById(entity.getUnitId());
-        if (isUsedUnitCodeInInternalCode) {
+        if (isUsedUnitCodeInInternalCode && StringUtils.isNotEmpty(unit.getCode())) {
             code += unit.getCode();
         }
         BasicInfoDto<Integer> allowedSymbolsValue = dictionaryServiceClient.getDictionaryValueBasicInfo(partOfSettings.getInternalCodeAllowedSymbolsDictionaryValueId());
@@ -239,7 +240,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public String generateFreeSegment(CustomerSettingsDTO partOfSettings, UnitResponseDto unit, String allowedSymbolsValue, String freeSegmentModeValue) {
-        int freeSegmentLength = partOfSettings.getIsUsedUnitCodeInInternalCode() ?
+        int freeSegmentLength = partOfSettings.getIsUsedUnitCodeInInternalCode() && StringUtils.isNotEmpty(unit.getCode()) ?
                 partOfSettings.getInternalCodeLength() - unit.getCode().length() :
                 partOfSettings.getInternalCodeLength();
 
@@ -357,10 +358,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private void verifyMandatoryFields(CustomerEntity customer, String errorMessage) {
-        //TODO: add verification on economic sector
         if (!UtilMethods.validateProperties(customer.getClassification(),
                 Optional.ofNullable(customer.getClassification()).map(Classification::getLegalFormId).orElse(null),
-                Optional.ofNullable(customer.getClassification()).map(Classification::getRiskClassId).orElse(null))) {
+                Optional.ofNullable(customer.getClassification()).map(Classification::getRiskClassId).orElse(null),
+                Optional.ofNullable(customer.getClassification()).map(Classification::getEconomicSectorId).orElse(null))) {
             throw new IllegalArgumentException(errorMessage);
         }
         if (Objects.equals(customer.getTypeId(), SystemDictionaryConstants.CUSTOMER_NATURAL_TYPE_VALUE_ID)) {
@@ -368,8 +369,9 @@ public class CustomerServiceImpl implements CustomerService {
                     customer.getNaturalCustomerInfo().getGenderId(),
                     customer.getNaturalCustomerInfo().getMaritalStatusId(),
                     customer.getNaturalCustomerInfo().getBirthDetails(),
-                    customer.getNaturalCustomerInfo().getSignatureSampleDocument(),
-                    Optional.ofNullable(customer.getNaturalCustomerInfo().getSignatureSampleDocument()).map(CustomerDocument::getFileId).orElse(null),
+                    //TODO: add verification on signature sample
+                    //customer.getNaturalCustomerInfo().getSignatureSampleDocument(),
+                    //Optional.ofNullable(customer.getNaturalCustomerInfo().getSignatureSampleDocument()).map(CustomerDocument::getFileId).orElse(null),
                     Optional.ofNullable(customer.getNaturalCustomerInfo().getBirthDetails()).map(BirthDetailsRequestDto::getBirthDate).orElse(null),
                     Optional.ofNullable(customer.getNaturalCustomerInfo().getBirthDetails()).map(BirthDetailsRequestDto::getBirthDatePrecisionId).orElse(null))) {
                 throw new IllegalArgumentException(errorMessage);
@@ -408,7 +410,7 @@ public class CustomerServiceImpl implements CustomerService {
     private void updateCustomerDependsOnPermission(CustomerEntity customer, CustomerEntity savedCustomer) {
         List<String> userPermissionCodes = userService.getUserPermission().stream().map(UserPermissionBasicDto::getCode).toList();
 
-        UpdateCustomerHandler rmBoPermHandler = new UpdateRmBoPermFieldsHandler(customerMapper);
+        UpdateCustomerHandler rmBoPermHandler = new UpdateRmBoPermFieldsHandler(customerMapper, coreSettingsServiceClient);
         UpdateCustomerHandler amlPermHandler = new UpdateAmlPermFieldsHandler();
         UpdateCustomerHandler businessPermHandler = new UpdateBusinessPermFieldsHandler();
         UpdateCustomerHandler riskPermHandler = new UpdateRiskPermFieldsHandler();
@@ -419,5 +421,16 @@ public class CustomerServiceImpl implements CustomerService {
         riskPermHandler.setNextHandler(null);
 
         rmBoPermHandler.handleUpdate(savedCustomer, customer, userPermissionCodes);
+    }
+
+    private void setNextReviewDate(CustomerEntity customer) {
+        CustomerSettingsDTO partOfSettings = coreSettingsServiceClient.getPartOfSettings();
+        if (Objects.nonNull(partOfSettings) && Objects.nonNull(partOfSettings.getKYCPeriod())) {
+            if (Objects.nonNull(customer.getKyc().getPreviousReviewDate()) &&
+                    (Objects.isNull(customer.getKyc().getNextReviewDate()) || customer.getKyc().getNextReviewDate().isAfter(customer.getKyc().getPreviousReviewDate().plusYears(partOfSettings.getKYCPeriod())))) {
+                customer.getKyc().setNextReviewDate(customer.getKyc().getPreviousReviewDate().plusYears(partOfSettings.getKYCPeriod()));
+            }
+        }
+        customer.getKyc().setNextReviewDate(customer.getKyc().getNextReviewDate());
     }
 }

@@ -179,6 +179,7 @@ class CustomerServiceImplTest {
         String legalName = "legalName";
         LegalCustomer legalCustomer = new LegalCustomer();
         legalCustomer.setLegalName(legalName);
+        unit.setCode(null);
         customer.setShortName(StringUtils.EMPTY);
         customer.setTypeId(SystemDictionaryConstants.CUSTOMER_LEGAL_ENTITY_VALUE_ID);
         customer.setLegalCustomerInfo(legalCustomer);
@@ -202,7 +203,7 @@ class CustomerServiceImplTest {
         assertEquals(userId, customerResult.getUpdatedBy());
 
         verify(customerRepository).save(any(CustomerEntity.class));
-        verify(coreSettingsServiceClient).getPartOfSettings();
+        verify(coreSettingsServiceClient, times(2)).getPartOfSettings();
         verify(orgStructureServiceClient).getUnitById(anyString());
         verify(dictionaryServiceClient, times(2)).getDictionaryValueBasicInfo(anyInt());
         verify(requestScope).getCurrentUserId();
@@ -222,11 +223,12 @@ class CustomerServiceImplTest {
         naturalCustomer.setFirstName(firstName);
         naturalCustomer.setLastName(lastName);
         naturalCustomer.setBirthDetails(birthDetails);
+        unit.setCode("code");
         customer.setShortName(StringUtils.EMPTY);
         customer.setTypeId(SystemDictionaryConstants.CUSTOMER_NATURAL_TYPE_VALUE_ID);
         customer.setNaturalCustomerInfo(naturalCustomer);
 
-        partOfSettings.setIsUsedUnitCodeInInternalCode(false);
+        partOfSettings.setIsUsedUnitCodeInInternalCode(true);
         partOfSettings.setInternalCodeAllowedSymbolsDictionaryValueId(1);
         partOfSettings.setInternalCodeFreeSegmentDictionaryValueId(2);
         partOfSettings.setInternalCodeLength(4);
@@ -249,7 +251,7 @@ class CustomerServiceImplTest {
         assertEquals(userId, customerResult.getUpdatedBy());
 
         verify(customerRepository).save(any(CustomerEntity.class));
-        verify(coreSettingsServiceClient).getPartOfSettings();
+        verify(coreSettingsServiceClient, times(2)).getPartOfSettings();
         verify(orgStructureServiceClient).getUnitById(anyString());
         verify(dictionaryServiceClient, times(3)).getDictionaryValueBasicInfo(anyInt());
         verify(freeSegmentService).getLastFreeSegmentGeneratedWith(anyString(), anyString());

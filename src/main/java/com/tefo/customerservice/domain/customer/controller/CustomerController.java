@@ -94,8 +94,8 @@ public class CustomerController {
         return ResponseEntity.ok(customerMapper.toDto(customerService.validateCustomer(customerId)));
     }
 
-    @PreValidateStatusAndPermission(type = "AUTHORIZE")
-    @PostMapping("/{customerId}/authorize")
+    @PreValidateStatusAndPermission(type = "AUTHORISE")
+    @PostMapping("/{customerId}/authorise")
     private ResponseEntity<CustomerResponseDto> authorizeCustomer(@PathVariable String customerId) {
         return ResponseEntity.ok(customerMapper.toDto(customerService.authorizeCustomer(customerId)));
     }

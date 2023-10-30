@@ -8,6 +8,7 @@ import com.tefo.library.commonutils.validation.ConditionalMandatoryFields;
 import com.tefo.library.commonutils.validation.MandatoryField;
 import com.tefo.library.commonutils.validation.MultipleConditionalMandatoryFields;
 import com.tefo.library.customdata.TemplatedDTO;
+import com.tefo.library.customdata.field.validation.ValidationErrorMessages;
 import com.tefo.library.customdata.field.value.FieldValueDTO;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,8 @@ import java.util.Set;
         @ConditionalMandatoryFields(
                 fieldNames = {"typeId", "legalCustomerInfo.bank"},
                 expectedValues = {"88", "true"},
-                conditionalFields = {"legalCustomerInfo.bic"}
+                conditionalFields = {"legalCustomerInfo.bic"},
+                message = ValidationErrorMessages.MANDATORY_ERROR_MESSAGE
         )
 })
 public class CustomerRequestDto implements TemplatedDTO {
